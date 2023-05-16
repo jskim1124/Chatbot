@@ -118,8 +118,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>A Simple Chatbot</title>
-        <meta name="description" content="A Simple Chatbot" />
+        <title>서울대학교 상담실</title>
+        <meta name="description" content="서울대학교 상담실" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
