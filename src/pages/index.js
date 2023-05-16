@@ -8,6 +8,8 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
 
+  const messagesEndRef = useRef(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior:"smooth"});
   };
