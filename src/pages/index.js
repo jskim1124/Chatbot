@@ -2,6 +2,20 @@ import { Chat } from "@/components/Chat";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
+import {db} from "@/firebase";
+import {
+    collection,
+    query,
+    doc,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    orderBy,
+    getDoc,
+} from "firebase/firestore";
+
+
 export default function Home() {
 
   const [messages, setMessages] = useState([]);
@@ -10,11 +24,15 @@ export default function Home() {
 
   const messagesEndRef = useRef(null);
 
+  const chatCollection = collection(db, "chats");
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior:"smooth"});
   };
 
-  const handleSend =async (message) => {
+  const handleSend = async (message) => {
+    const newtime = {...message, time:Date.now()};
+    addDoc(chatCollection,newtime);
     const updatedMessages = [...messages, message];
     setMessages(updatedMessages);
     setLoading(true);
@@ -41,15 +59,52 @@ export default function Home() {
     }
     setLoading(false);
     setMessages((messages)=> [...messages, result]);
+    const ntime = {...result, time:Date.now()};
+    addDoc(chatCollection,ntime);
+
   };
 
-  const handleReset = () => {
-    setMessages([
-      {
+  const handleReset = async () => {
+    const defaultChat = {
         role:"assistant",
         content:"안녕하세요. 서울대학교 상담실입니다. 어떤 고민이 있으신가요?",
-      },
-    ]);
+      };
+
+    const q = query(
+      chatCollection,
+      orderBy("time","asc")
+      );
+
+    const results = await getDocs(q);
+
+    const newChats = [];
+
+    results.docs.forEach((doc)=> {
+      const { time, ...dataWithoutTime } = doc.data();
+      newChats.push(dataWithoutTime);
+    });
+
+    const lastDoc = results.docs[results.docs.length - 1];
+    if (lastDoc && lastDoc.exists && lastDoc.data().role === "user") {
+      await deleteDoc(doc(chatCollection, lastDoc.id));
+        newChats.pop();
+    }
+
+    setMessages([defaultChat, ... newChats]);
+    console.log(newChats);
+  };
+
+  const handleResetClick = async () => {
+    const confirmed = window.confirm("정말 초기화하시겠습니까? 이후에는 복구하실 수 없습니다");
+
+    if (confirmed) {
+      const q = query(chatCollection);
+      const results = await getDocs(q);
+      for (const doc of results.docs) {
+        await deleteDoc(doc.ref);
+      }  
+      handleReset();
+    }
   };
 
   useEffect(()=> {
@@ -82,14 +137,23 @@ export default function Home() {
         </div>
 
         <div className="flex-1 overflow-auto sm:px-10 pb-4 sm:pb-10">
-          <div className="max-w-[800px] mx-auto mt-4 sm:mt-12">
+          <div className="max-w-[800px] mx-auto mt-4">
             <Chat
               messages={messages}
               loading={loading}
               onSendMessage={handleSend}
             />
             <div ref={messagesEndRef} />
+            <div>
+              <span className="mx-60"></span>
+              <button className="ml-48 mt-3 w-32 justify-self-end p-1 bg-gray-400 text-white rounded hover:bg-red-500 hover:text-white-500 "
+              onClick={handleResetClick}
+              >
+                초기화하기
+              </button>
+            </div>
           </div>
+
         </div>
 
         <div className="flex h-[30px] sm:h-[50px] border-t border-neutral-300 py-2 px-8 items-center sm:justify-between justify-center"></div>
