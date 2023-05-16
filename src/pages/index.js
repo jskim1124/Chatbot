@@ -146,7 +146,7 @@ export default function Home() {
             <div ref={messagesEndRef} />
             <div>
               <span className="mx-60"></span>
-              <button className="ml-48 mt-3 w-32 justify-self-end p-1 bg-gray-400 text-white rounded hover:bg-red-500 hover:text-white-500 "
+              <button className="ml-48 mt-3 py-1.5 w-32 justify-self-end p-1 bg-gray-400 text-white rounded hover:bg-red-500 hover:text-white-500 "
               onClick={handleResetClick}
               >
                 초기화하기
