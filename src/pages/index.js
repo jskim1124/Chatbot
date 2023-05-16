@@ -47,7 +47,7 @@ export default function Home() {
     setMessages([
       {
         role:"assistant",
-        content:"하이루 방가방가",
+        content:"안녕하세요. 서울대학교 상담실입니다. 어떤 고민이 있으신가요?",
       },
     ]);
   };
@@ -76,7 +76,7 @@ export default function Home() {
               className="ml-2 hover:opacity-50"
               href="https://chatbot-jskim1124.vercel.app/"
             >
-              A Simple Chatbot
+              서울대학교 상담실
             </a>
           </div>
         </div>

@@ -7,7 +7,7 @@ export const ChatBubble = ({message}) => {
         }`}
         >
             <div
-            className={`flex items-center ${
+            className={`border rounded flex items-center ${
                 message.role === "assistant"
                 ? "bg-neutral-200 text-neutral-900"
                 : "bg-blue-500 text-white"
