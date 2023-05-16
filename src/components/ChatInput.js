@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 
 export const ChatInput = ({onSendMessage}) => {
     const [content, setContent] = useState();
-
     const textareaRef = useRef(null);
 
     const handleChange = (e) => {
