@@ -23,7 +23,7 @@ export const Chat = ({messages, loading, onSendMessage}) => {
                         <ChatInput onSendMessage={onSendMessage} />
                     </div>
                 )}
-                
+
             </div>
         </>
     );
