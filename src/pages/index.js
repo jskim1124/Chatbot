@@ -34,7 +34,7 @@ export default function Home() {
 
   const handleSend = async (message) => {
     const newtime = {...message, time:Date.now()};
-    addDoc(chatCollection,newtime);
+    // addDoc(chatCollection,newtime);
     const updatedMessages = [...messages, message];
     setMessages(updatedMessages);
     setLoading(true);
@@ -70,7 +70,7 @@ export default function Home() {
       setRes(updatedGraphData);
     }
     const ntime = {...result, time:Date.now()};
-    addDoc(chatCollection,ntime);
+    // addDoc(chatCollection,ntime);
   };
 
   const handleReset = async () => {
@@ -159,7 +159,7 @@ export default function Home() {
               />
             </div>
 
-            <div ref={messagesEndRef} />
+            {/* <div ref={messagesEndRef} />
             <div>
               <span className="mx-60"></span>
               <button className="ml-48 mt-3 py-1.5 w-32 justify-self-end p-1 bg-gray-400 text-white rounded hover:bg-red-500 hover:text-white-500 "
@@ -167,7 +167,7 @@ export default function Home() {
               >
                 초기화하기
               </button>
-            </div>
+            </div> */}
           </div>
 
         </div>
