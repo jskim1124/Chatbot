@@ -1,6 +1,7 @@
 import { Chat } from "@/components/Chat";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import  App  from "@/components/Graph"
 
 import {db} from "@/firebase";
 import {
@@ -19,6 +20,7 @@ import {
 export default function Home() {
 
   const [messages, setMessages] = useState([]);
+  const [res, setRes] = useState([50,50,50,50,50,50,50]);
 
   const [loading, setLoading] = useState(false);
 
@@ -59,15 +61,23 @@ export default function Home() {
     }
     setLoading(false);
     setMessages((messages)=> [...messages, result]);
+    const startPos = result.content.indexOf('{'); // JSON 문자열 시작 위치 찾기
+    const endPos = result.content.lastIndexOf('}'); // JSON 문자열 끝 위치 찾기
+    const jsonStr = result.content.substring(startPos, endPos + 1); // JSON 문자열 추출
+    const resValues = JSON.parse(jsonStr);
+    if (Object.keys(resValues).length === 7) {
+      const updatedGraphData = res.map((value, index) => value + resValues[Object.keys(resValues)[index]]);
+      setRes(updatedGraphData);
+    }
     const ntime = {...result, time:Date.now()};
     addDoc(chatCollection,ntime);
-
   };
 
   const handleReset = async () => {
     const defaultChat = {
         role:"assistant",
-        content:"안녕하세요. 서울대학교 상담실입니다. 어떤 고민이 있으신가요?",
+        content:"학교생활기록부를 바탕으로 영역별 창의성을 진단해드립니다. \n생활기록부에 기재된 활동을 입력하세요.",
+
       };
 
     const q = query(
@@ -118,31 +128,37 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>서울대학교 상담실</title>
-        <meta name="description" content="서울대학교 상담실" />
+        <title>LoG-In Program : School Record Based Creativity Measurement</title>
+        <meta name="description" content="LoG-In Program : School Record Based Creativity Measurement" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="flex flex-col h-screen">
-        <div className="flex h-[50px] sm:h-[60px] border-b border-neutral-300 py-2 px-2 sm:px-8 items-center justify-between">
+        <div className="flex h-[50px] sm:h-[60px] max-w-[1100px] mx-auto border-b border-neutral-300 py-2 px-2 sm:px-8 items-center justify-between">
           <div className="font-bold text-3xl flex text-center">
             <a
-              className="ml-2 hover:opacity-50"
+              className="hover:opacity-50"
               href="https://chatbot-jskim1124.vercel.app/"
             >
-              서울대학교 상담실
+              LoG-In Program : School Record Based Creativity Measurement
             </a>
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto sm:px-10 pb-4 sm:pb-10">
-          <div className="max-w-[800px] mx-auto mt-4">
-            <Chat
+        <div className="flex-1 sm:px-10 pb-4 sm:pb-10">
+          <div className="max-w-[1000px] mx-auto mt-4">
+            <div className="flex">
+              <App
+              res = {res}
+              />
+              <Chat
               messages={messages}
               loading={loading}
               onSendMessage={handleSend}
-            />
+              />
+            </div>
+
             <div ref={messagesEndRef} />
             <div>
               <span className="mx-60"></span>
